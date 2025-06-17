@@ -16,19 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              // MetaMask対策
-              if (typeof window !== 'undefined' && window.ethereum) {
-                delete window.ethereum;
-              }
-            `,
-          }}
-        />
-      </head>
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className} suppressHydrationWarning>{children}</body>
     </html>
   )
 }

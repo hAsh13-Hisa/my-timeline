@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 type FamousPerson = {
   name: string
@@ -19,6 +19,11 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
   const [famousPeople, setFamousPeople] = useState<FamousPerson[]>([])
   const [timeline, setTimeline] = useState<TimelineEvent[]>([])
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -41,6 +46,10 @@ export default function Home() {
     } finally {
       setLoading(false)
     }
+  }
+
+  if (!mounted) {
+    return null
   }
 
   return (
