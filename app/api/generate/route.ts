@@ -42,6 +42,10 @@ async function generateWithOpenAI(
     throw new Error('OpenAI API key not configured')
   }
 
+  // レート制限エラー時のリトライ設定
+  const maxRetries = 3
+  let retries = 0
+
   const systemPrompt = `あなたは年表と有名人の情報を生成するアシスタントです。
 ユーザーの生年月日に基づいて、以下の情報を生成してください：
 1. 同じ誕生日（月日）の有名人を3-5名
@@ -69,29 +73,63 @@ JSON形式で返答してください。`
   ]
 }`
 
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: 'gpt-4o-mini',
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt },
-      ],
-      temperature: 0.7,
-      response_format: { type: 'json_object' },
-    }),
-  })
+  while (retries < maxRetries) {
+    try {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: 'gpt-3.5-turbo',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt },
+          ],
+          temperature: 0.7,
+          max_tokens: 1000,
+        }),
+      })
 
-  if (!response.ok) {
-    throw new Error(`OpenAI API error: ${response.statusText}`)
+      if (response.status === 429) {
+        retries++
+        const waitTime = Math.pow(2, retries) * 1000
+        console.log(`Rate limit hit, waiting ${waitTime}ms before retry ${retries}/${maxRetries}`)
+        await new Promise(resolve => setTimeout(resolve, waitTime))
+        continue
+      }
+
+      if (!response.ok) {
+        throw new Error(`OpenAI API error: ${response.statusText}`)
+      }
+
+      const data = await response.json()
+      const content = data.choices[0].message.content
+      
+      try {
+        const result = JSON.parse(content)
+        return result
+      } catch (parseError) {
+        console.error('Failed to parse JSON:', content)
+        // デフォルトのレスポンスを返す
+        return {
+          famousPeople: [
+            { name: "データ取得中", description: "しばらくお待ちください" }
+          ],
+          timeline: [
+            { year: birthYear, age: 0, event: "誕生", isHighlighted: true }
+          ]
+        }
+      }
+    } catch (error) {
+      if (retries === maxRetries - 1) {
+        throw error
+      }
+      retries++
+      await new Promise(resolve => setTimeout(resolve, 1000))
+    }
   }
 
-  const data = await response.json()
-  const result = JSON.parse(data.choices[0].message.content)
-
-  return result
+  throw new Error('Max retries exceeded')
 }

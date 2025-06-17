@@ -43,6 +43,7 @@ export default function Home() {
       setTimeline(data.timeline)
     } catch (error) {
       console.error('Error generating timeline:', error)
+      alert('生成中にエラーが発生しました。しばらく待ってから再度お試しください。')
     } finally {
       setLoading(false)
     }
