@@ -28,10 +28,22 @@ export async function POST(request: NextRequest) {
     if (error instanceof Error) {
       if (error.message.includes('OpenAI API key not configured')) {
         errorMessage = 'OpenAI APIキーが設定されていません'
+      } else if (error.message.includes('insufficient_quota')) {
+        errorMessage = 'OpenAI APIの使用量制限に達しています。課金設定を確認してください'
+      } else if (error.message.includes('rate_limit_exceeded')) {
+        errorMessage = 'OpenAI APIのレート制限に達しました。しばらく時間をおいて再度お試しください'
       } else if (error.message.includes('OpenAI API error')) {
         errorMessage = 'OpenAI APIでエラーが発生しました。しばらく時間をおいて再度お試しください'
       } else if (error.message.includes('解析に失敗')) {
         errorMessage = 'AI応答の解析に失敗しました。再度お試しください'
+      } else if (error.message.includes('Max retries exceeded')) {
+        errorMessage = '複数回の試行でAPI接続に失敗しました。APIの設定を確認してください'
+      }
+      
+      // 開発環境では詳細なエラーメッセージを表示
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Detailed error:', error.message)
+        errorMessage += ` (詳細: ${error.message})`
       }
     }
     
