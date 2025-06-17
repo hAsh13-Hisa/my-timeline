@@ -50,17 +50,21 @@ const testOpenAIAPI = async () => {
       console.log('   ❌ タイムラインデータが不正です');
     }
 
-    // OpenAI APIが使用されたかチェック
-    console.log('\n3. API使用状況の確認...');
-    const hasUniqueData = data.famousPeople.some(person => 
-      !person.name.includes('アインシュタイン') && 
-      !person.name.includes('スティーブ・ジョブズ')
+    // データの妥当性をチェック
+    console.log('\n3. データ品質の確認...');
+    
+    const hasBirthEvent = data.timeline.some(event => 
+      event.event.includes('生まれる') || event.event.includes('誕生')
     );
     
-    if (hasUniqueData || data.timeline.length > 6) {
-      console.log('   ✅ OpenAI APIが正常に使用されました');
+    const hasCurrentAge = data.timeline.some(event => 
+      event.event.includes('現在') || event.year === new Date().getFullYear()
+    );
+    
+    if (hasBirthEvent && hasCurrentAge) {
+      console.log('   ✅ データの整合性が確認されました');
     } else {
-      console.log('   ⚠️  モックデータが返されました（APIエラーまたは未設定）');
+      console.log('   ⚠️  データに不整合があります');
     }
 
     console.log('\n✅ テスト完了');

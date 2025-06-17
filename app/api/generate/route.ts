@@ -18,81 +18,30 @@ export async function POST(request: NextRequest) {
     const birthDay = birthDateObj.getDate()
 
     // OpenAI APIを使用して生成
-    try {
-      const result = await generateWithOpenAI(birthMonth, birthDay, birthYear, currentYear)
-      return NextResponse.json(result)
-    } catch (apiError) {
-      console.error('OpenAI API failed, returning mock data:', apiError)
-      // APIエラー時はモックデータを返す
-      return NextResponse.json(getMockData(birthMonth, birthDay, birthYear, currentYear))
-    }
+    const result = await generateWithOpenAI(birthMonth, birthDay, birthYear, currentYear)
+    return NextResponse.json(result)
   } catch (error) {
     console.error('Error in generate API:', error)
+    
+    // より詳細なエラーメッセージを返す
+    let errorMessage = 'AI年表の生成中にエラーが発生しました'
+    if (error instanceof Error) {
+      if (error.message.includes('OpenAI API key not configured')) {
+        errorMessage = 'OpenAI APIキーが設定されていません'
+      } else if (error.message.includes('OpenAI API error')) {
+        errorMessage = 'OpenAI APIでエラーが発生しました。しばらく時間をおいて再度お試しください'
+      } else if (error.message.includes('解析に失敗')) {
+        errorMessage = 'AI応答の解析に失敗しました。再度お試しください'
+      }
+    }
+    
     return NextResponse.json(
-      { error: '生成中にエラーが発生しました' },
+      { error: errorMessage },
       { status: 500 }
     )
   }
 }
 
-function getMockData(birthMonth: number, birthDay: number, birthYear: number, currentYear: number) {
-  const age = currentYear - birthYear
-
-  return {
-    famousPeople: [
-      {
-        name: "アルベルト・アインシュタイン",
-        description: "理論物理学者。相対性理論で有名。"
-      },
-      {
-        name: "スティーブ・ジョブズ",
-        description: "Apple創業者。iPhoneやMacを生み出した。"
-      },
-      {
-        name: "宮崎駿",
-        description: "アニメーション監督。ジブリ作品で世界的に有名。"
-      }
-    ],
-    timeline: [
-      {
-        year: birthYear,
-        age: 0,
-        event: `${birthMonth}月${birthDay}日、この世に生まれる`,
-        isHighlighted: true
-      },
-      {
-        year: birthYear + 6,
-        age: 6,
-        event: "小学校入学",
-        isHighlighted: false
-      },
-      {
-        year: birthYear + 12,
-        age: 12,
-        event: "中学校入学",
-        isHighlighted: false
-      },
-      {
-        year: birthYear + 15,
-        age: 15,
-        event: "高校入学",
-        isHighlighted: false
-      },
-      {
-        year: birthYear + 18,
-        age: 18,
-        event: "成人を迎える",
-        isHighlighted: false
-      },
-      {
-        year: currentYear,
-        age: age,
-        event: `現在${age}歳`,
-        isHighlighted: true
-      }
-    ]
-  }
-}
 
 async function generateWithOpenAI(
   birthMonth: number,
@@ -177,9 +126,8 @@ JSON形式で返答してください。`
         const result = JSON.parse(content)
         return result
       } catch (parseError) {
-        console.error('Failed to parse JSON:', content)
-        // デフォルトのレスポンスを返す
-        return getMockData(birthMonth, birthDay, birthYear, currentYear)
+        console.error('Failed to parse JSON response from OpenAI:', content)
+        throw new Error('OpenAI APIからの応答の解析に失敗しました')
       }
     } catch (error) {
       if (retries === maxRetries - 1) {
