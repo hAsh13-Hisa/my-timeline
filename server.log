@@ -13,22 +13,34 @@
  ⚠ The "experimental.esmExternals" option has been modified. experimental.esmExternals is not recommended to be modified as it may disrupt module resolution. It should be removed from your next.config.js.
  ✓ Ready in 2.1s
  ○ Compiling /api/generate ...
- ✓ Compiled /api/generate in 944ms (363 modules)
-Rate limit hit, waiting 2000ms before retry 1/3
-Rate limit hit, waiting 4000ms before retry 2/3
-Rate limit hit, waiting 8000ms before retry 3/3
-Error in generate API: Error: Max retries exceeded
-    at generateWithOpenAI (app/api/generate/route.ts:141:8)
+ ✓ Compiled /api/generate in 1062ms (363 modules)
+Anthropic API Error: {
+  type: 'error',
+  error: { type: 'authentication_error', message: 'invalid x-api-key' }
+}
+Anthropic API Error: {
+  type: 'error',
+  error: { type: 'authentication_error', message: 'invalid x-api-key' }
+}
+Anthropic API Error: {
+  type: 'error',
+  error: { type: 'authentication_error', message: 'invalid x-api-key' }
+}
+Error in generate API: Error: Anthropic API error: Unauthorized - {"type":"error","error":{"type":"authentication_error","message":"invalid x-api-key"}}
+    at generateWithClaude (app/api/generate/route.ts:173:14)
     at async POST (app/api/generate/route.ts:21:19)
-  139 |   }
-  140 |
-> 141 |   throw new Error('Max retries exceeded')
-      |        ^
-  142 | }
- POST /api/generate 500 in 16724ms
- │ POST https://api.openai.com/v1/chat/completions 429 in 365ms (cache skip)
+  171 |         const errorData = await response.json()
+  172 |         console.error('Anthropic API Error:', errorData)
+> 173 |         throw new Error(`Anthropic API error: ${response.statusText} - ${JSON.stringify(errorData)}`)
+      |              ^
+  174 |       }
+  175 |
+  176 |       const data = await response.json()
+Detailed error: Anthropic API error: Unauthorized - {"type":"error","error":{"type":"authentication_error","message":"invalid x-api-key"}}
+ POST /api/generate 500 in 4084ms
+ │ POST https://api.anthropic.com/v1/messages 401 in 255ms (cache skip)
  │ │ Cache skipped reason: (auto no cache)
- │ POST https://api.openai.com/v1/chat/completions 429 in 607ms (cache skip)
+ │ POST https://api.anthropic.com/v1/messages 401 in 206ms (cache skip)
  │ │ Cache skipped reason: (auto no cache)
- │ POST https://api.openai.com/v1/chat/completions 429 in 453ms (cache skip)
+ │ POST https://api.anthropic.com/v1/messages 401 in 199ms (cache skip)
  │ │ Cache skipped reason: (auto no cache)

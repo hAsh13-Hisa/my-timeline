@@ -2,9 +2,9 @@
 const testClaudeAPI = async () => {
   console.log('Claude APIテストを開始します...\n');
 
-  // テスト用のダミーデータ
+  // テスト用のダミーデータ（1964年9月29日）
   const testData = {
-    birthDate: '1990-01-15'
+    birthDate: '1964-09-29'
   };
 
   try {
