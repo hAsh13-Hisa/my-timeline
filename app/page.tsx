@@ -53,10 +53,10 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <main className="min-h-screen bg-gradient-to-br from-pink-100 via-yellow-50 via-green-50 to-blue-100">
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-pink-500 via-red-500 via-yellow-500 via-green-500 to-blue-500 bg-clip-text text-transparent mb-4">
             私年表
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
@@ -65,7 +65,7 @@ export default function Home() {
         </div>
 
         <div className="max-w-md mx-auto mb-16">
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+          <div className="bg-gradient-to-r from-purple-50 via-pink-50 to-red-50 rounded-2xl shadow-xl p-8 border-2 border-gradient-to-r from-purple-200 to-pink-200">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label
@@ -86,7 +86,7 @@ export default function Home() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-xl hover:from-blue-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed transition-all duration-200 font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                className="w-full bg-gradient-to-r from-pink-500 via-red-500 via-orange-500 to-yellow-500 text-white py-3 px-6 rounded-xl hover:from-pink-600 hover:via-red-600 hover:via-orange-600 hover:to-yellow-600 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed transition-all duration-200 font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
               >
 {loading ? '生成中...' : '✨ 年表を生成'}
               </button>
@@ -98,17 +98,17 @@ export default function Home() {
         {timeline.length > 0 && (
           <section>
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-800 mb-2">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-green-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent mb-2">
                 📚 あなたの年表
               </h2>
-              <p className="text-gray-600">あなたが生きた時代の歴史的出来事</p>
+              <p className="text-purple-700 font-medium">あなたが生きた時代の歴史的出来事</p>
             </div>
             <div className="max-w-4xl mx-auto">
-              <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+              <div className="bg-gradient-to-r from-white via-blue-50 to-purple-50 rounded-2xl shadow-xl overflow-hidden border-2 border-purple-200">
                 <div className="overflow-x-auto">
                   <table className="min-w-full">
                     <thead>
-                      <tr className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+                      <tr className="bg-gradient-to-r from-indigo-500 via-purple-500 via-pink-500 to-red-500 text-white">
                         <th className="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
                           📅 西暦
                         </th>
@@ -129,12 +129,22 @@ export default function Home() {
                           }`}
                         >
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                            <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                              index % 4 === 0 ? 'bg-red-100 text-red-800' :
+                              index % 4 === 1 ? 'bg-green-100 text-green-800' :
+                              index % 4 === 2 ? 'bg-blue-100 text-blue-800' :
+                              'bg-purple-100 text-purple-800'
+                            }`}>
                               {event.year}年
                             </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
+                            <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                              index % 4 === 0 ? 'bg-orange-100 text-orange-800' :
+                              index % 4 === 1 ? 'bg-teal-100 text-teal-800' :
+                              index % 4 === 2 ? 'bg-indigo-100 text-indigo-800' :
+                              'bg-pink-100 text-pink-800'
+                            }`}>
                               {event.age}歳
                             </span>
                           </td>
