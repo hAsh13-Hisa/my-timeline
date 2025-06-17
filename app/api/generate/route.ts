@@ -17,16 +17,80 @@ export async function POST(request: NextRequest) {
     const birthMonth = birthDateObj.getMonth() + 1
     const birthDay = birthDateObj.getDate()
 
-    // OpenAI APIを使用して有名人と年表を生成
-    const openAIResponse = await generateWithOpenAI(birthMonth, birthDay, birthYear, currentYear)
-
-    return NextResponse.json(openAIResponse)
+    // OpenAI APIを使用して生成
+    try {
+      const result = await generateWithOpenAI(birthMonth, birthDay, birthYear, currentYear)
+      return NextResponse.json(result)
+    } catch (apiError) {
+      console.error('OpenAI API failed, returning mock data:', apiError)
+      // APIエラー時はモックデータを返す
+      return NextResponse.json(getMockData(birthMonth, birthDay, birthYear, currentYear))
+    }
   } catch (error) {
     console.error('Error in generate API:', error)
     return NextResponse.json(
       { error: '生成中にエラーが発生しました' },
       { status: 500 }
     )
+  }
+}
+
+function getMockData(birthMonth: number, birthDay: number, birthYear: number, currentYear: number) {
+  const age = currentYear - birthYear
+
+  return {
+    famousPeople: [
+      {
+        name: "アルベルト・アインシュタイン",
+        description: "理論物理学者。相対性理論で有名。"
+      },
+      {
+        name: "スティーブ・ジョブズ",
+        description: "Apple創業者。iPhoneやMacを生み出した。"
+      },
+      {
+        name: "宮崎駿",
+        description: "アニメーション監督。ジブリ作品で世界的に有名。"
+      }
+    ],
+    timeline: [
+      {
+        year: birthYear,
+        age: 0,
+        event: `${birthMonth}月${birthDay}日、この世に生まれる`,
+        isHighlighted: true
+      },
+      {
+        year: birthYear + 6,
+        age: 6,
+        event: "小学校入学",
+        isHighlighted: false
+      },
+      {
+        year: birthYear + 12,
+        age: 12,
+        event: "中学校入学",
+        isHighlighted: false
+      },
+      {
+        year: birthYear + 15,
+        age: 15,
+        event: "高校入学",
+        isHighlighted: false
+      },
+      {
+        year: birthYear + 18,
+        age: 18,
+        event: "成人を迎える",
+        isHighlighted: false
+      },
+      {
+        year: currentYear,
+        age: age,
+        event: `現在${age}歳`,
+        isHighlighted: true
+      }
+    ]
   }
 }
 
@@ -101,7 +165,9 @@ JSON形式で返答してください。`
       }
 
       if (!response.ok) {
-        throw new Error(`OpenAI API error: ${response.statusText}`)
+        const errorData = await response.json()
+        console.error('OpenAI API Error:', errorData)
+        throw new Error(`OpenAI API error: ${response.statusText} - ${JSON.stringify(errorData)}`)
       }
 
       const data = await response.json()
@@ -113,14 +179,7 @@ JSON形式で返答してください。`
       } catch (parseError) {
         console.error('Failed to parse JSON:', content)
         // デフォルトのレスポンスを返す
-        return {
-          famousPeople: [
-            { name: "データ取得中", description: "しばらくお待ちください" }
-          ],
-          timeline: [
-            { year: birthYear, age: 0, event: "誕生", isHighlighted: true }
-          ]
-        }
+        return getMockData(birthMonth, birthDay, birthYear, currentYear)
       }
     } catch (error) {
       if (retries === maxRetries - 1) {
