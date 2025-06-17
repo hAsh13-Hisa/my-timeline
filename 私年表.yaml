@@ -1,0 +1,56 @@
+application:
+  name: "私年表"
+  description: "ユーザーの生年月日を元に、同じ誕生日の有名人や人生の年表をAIが自動生成するWebアプリ"
+
+features:
+  user_input:
+    birth_date:
+      label: "生年月日"
+      format: "YYYY-MM-DD"
+      required: true
+
+  ai_generation:
+    famous_people:
+      enabled: true
+      title: "同じ誕生日の有名人"
+      details:
+        - "入力された生年月日と同じ誕生日の有名人リストを生成"
+        - "3〜5名程度の表示を想定"
+        - "名前と簡単なプロフィール（職業、代表作など）を表示"
+
+    timeline:
+      enabled: true
+      title: "あなたの年表"
+      details:
+        - "ユーザーの生まれ年から現在までの主要な出来事を年表形式で生成"
+        - "各出来事は以下の項目で構成: 西暦、年齢、出来事の概要"
+        - "誕生日と同じ日付に起こった出来事は強調表示"
+      fields:
+        - name: "西暦"
+          type: "integer"
+        - name: "年齢"
+          type: "integer"
+          description: "ユーザーがその出来事の時に何歳だったか (0歳は生まれた年)"
+        - name: "出来事"
+          type: "string"
+          description: "出来事の内容を端的に記述"
+      highlight_condition: "誕生日と同じ日付の出来事"
+
+ui_elements:
+  - component: "date_picker"
+    label: "生年月日を入力してください"
+  - component: "button"
+    label: "年表を生成"
+  - component: "section"
+    title: "同じ誕生日の有名人"
+    display_by: "list"
+  - component: "section"
+    title: "あなたの年表"
+    display_by: "table"
+    highlight_style: "bold_text" # 強調表示の例
+
+technologies_considerations:
+  - "AIモデル（自然言語処理、知識グラフ連携など）"
+  - "フロントエンドフレームワーク（React, Vue, Angularなど）"
+  - "バックエンド言語（Python, Node.jsなど）"
+  - "データベース"
