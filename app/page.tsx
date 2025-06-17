@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 
 type FamousPerson = {
   name: string
+  birthDate: string
   description: string
 }
 
@@ -105,9 +106,12 @@ export default function Home() {
                   key={index}
                   className="bg-white p-6 rounded-lg shadow-md"
                 >
-                  <h3 className="font-semibold text-lg text-gray-900 mb-2">
+                  <h3 className="font-semibold text-lg text-gray-900 mb-1">
                     {person.name}
                   </h3>
+                  <p className="text-sm text-blue-600 font-medium mb-2">
+                    {person.birthDate}
+                  </p>
                   <p className="text-gray-600">{person.description}</p>
                 </div>
               ))}

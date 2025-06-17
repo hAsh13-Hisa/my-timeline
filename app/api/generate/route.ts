@@ -83,6 +83,7 @@ async function generateWithClaude(
 - 間違った誕生日の人物を絶対に含めない
 - 不明な場合は「確実な情報がありません」と回答
 - 代表作や職業は正確に記載
+- 必ず生年月日を「YYYY年M月D日」形式で含める（例：1935年9月29日）
 
 【歴史的事実の基準】：
 - 実際に起きた事件のみを記載
@@ -119,6 +120,7 @@ JSON形式で返答してください。`
   "famousPeople": [
     {
       "name": "正確に確認された有名人の名前",
+      "birthDate": "YYYY年${birthMonth}月${birthDay}日（正確な生年月日）",
       "description": "正確な職業と代表作"
     }
   ],

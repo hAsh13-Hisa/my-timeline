@@ -44,3 +44,17 @@ Detailed error: Anthropic API error: Unauthorized - {"type":"error","error":{"ty
  │ │ Cache skipped reason: (auto no cache)
  │ POST https://api.anthropic.com/v1/messages 401 in 199ms (cache skip)
  │ │ Cache skipped reason: (auto no cache)
+   Reload env: .env.local
+ ✓ Compiled in 102ms (279 modules)
+ ✓ Compiled /api/generate in 129ms (84 modules)
+ POST /api/generate 200 in 6886ms
+ │ POST https://api.anthropic.com/v1/messages 200 in 6500ms (cache skip)
+ │ │ Cache skipped reason: (auto no cache)
+ POST /api/generate 200 in 3942ms
+ │ POST https://api.anthropic.com/v1/messages 200 in 3733ms (cache skip)
+ │ │ Cache skipped reason: (auto no cache)
+ ○ Compiling / ...
+ ✓ Compiled / in 3.1s (705 modules)
+ GET / 200 in 3355ms
+ HEAD / 200 in 70ms
+ ✓ Compiled in 229ms (322 modules)
