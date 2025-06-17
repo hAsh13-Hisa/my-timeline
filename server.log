@@ -11,75 +11,15 @@
 
  ✓ Starting...
  ⚠ The "experimental.esmExternals" option has been modified. experimental.esmExternals is not recommended to be modified as it may disrupt module resolution. It should be removed from your next.config.js.
- ✓ Ready in 2.1s
- ○ Compiling /api/generate ...
- ✓ Compiled /api/generate in 1062ms (363 modules)
-Anthropic API Error: {
-  type: 'error',
-  error: { type: 'authentication_error', message: 'invalid x-api-key' }
-}
-Anthropic API Error: {
-  type: 'error',
-  error: { type: 'authentication_error', message: 'invalid x-api-key' }
-}
-Anthropic API Error: {
-  type: 'error',
-  error: { type: 'authentication_error', message: 'invalid x-api-key' }
-}
-Error in generate API: Error: Anthropic API error: Unauthorized - {"type":"error","error":{"type":"authentication_error","message":"invalid x-api-key"}}
-    at generateWithClaude (app/api/generate/route.ts:173:14)
-    at async POST (app/api/generate/route.ts:21:19)
-  171 |         const errorData = await response.json()
-  172 |         console.error('Anthropic API Error:', errorData)
-> 173 |         throw new Error(`Anthropic API error: ${response.statusText} - ${JSON.stringify(errorData)}`)
-      |              ^
-  174 |       }
-  175 |
-  176 |       const data = await response.json()
-Detailed error: Anthropic API error: Unauthorized - {"type":"error","error":{"type":"authentication_error","message":"invalid x-api-key"}}
- POST /api/generate 500 in 4084ms
- │ POST https://api.anthropic.com/v1/messages 401 in 255ms (cache skip)
- │ │ Cache skipped reason: (auto no cache)
- │ POST https://api.anthropic.com/v1/messages 401 in 206ms (cache skip)
- │ │ Cache skipped reason: (auto no cache)
- │ POST https://api.anthropic.com/v1/messages 401 in 199ms (cache skip)
- │ │ Cache skipped reason: (auto no cache)
-   Reload env: .env.local
- ✓ Compiled in 102ms (279 modules)
- ✓ Compiled /api/generate in 129ms (84 modules)
- POST /api/generate 200 in 6886ms
- │ POST https://api.anthropic.com/v1/messages 200 in 6500ms (cache skip)
- │ │ Cache skipped reason: (auto no cache)
- POST /api/generate 200 in 3942ms
- │ POST https://api.anthropic.com/v1/messages 200 in 3733ms (cache skip)
- │ │ Cache skipped reason: (auto no cache)
+ ✓ Ready in 2.3s
  ○ Compiling / ...
- ✓ Compiled / in 3.1s (705 modules)
- GET / 200 in 3355ms
- HEAD / 200 in 70ms
- ✓ Compiled in 229ms (322 modules)
- ✓ Compiled in 177ms (322 modules)
- ✓ Compiled in 122ms (322 modules)
- ✓ Compiled in 154ms (322 modules)
- ✓ Compiled in 131ms (322 modules)
- ✓ Compiled in 133ms (322 modules)
- ⨯ ./app/page.tsx
-Error:   [31mx[0m Unexpected token `main`. Expected jsx identifier
-    ,-[[36;1;4m/home/qthisa/xml-to-word-cli/my-timeline/app/page.tsx[0m:63:1]
- [2m60[0m |   }
- [2m61[0m | 
- [2m62[0m |   return (
- [2m63[0m |     <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-    : [35;1m     ^^^^[0m
- [2m64[0m |       <div className="max-w-6xl mx-auto px-4 py-8">
- [2m65[0m |         <div className="text-center mb-12">
- [2m66[0m |           <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
-    `----
-
-Caused by:
-    Syntax Error
-
-Import trace for requested module:
-./app/page.tsx
- ✓ Compiled in 208ms (322 modules)
+ ✓ Compiled / in 2.5s (677 modules)
+ GET / 200 in 2805ms
+ GET / 200 in 37ms
+ ✓ Compiled /api/generate in 472ms (696 modules)
+ POST /api/generate 200 in 5907ms
+ │ POST https://api.anthropic.com/v1/messages 200 in 5322ms (cache skip)
+ │ │ Cache skipped reason: (auto no cache)
+ GET / 200 in 104ms
+ ✓ Compiled in 234ms (322 modules)
 [?25h

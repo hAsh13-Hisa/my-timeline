@@ -2,11 +2,6 @@
 
 import { useState, useEffect } from 'react'
 
-type FamousPerson = {
-  name: string
-  birthDate: string
-  description: string
-}
 
 type TimelineEvent = {
   year: number
@@ -18,7 +13,6 @@ type TimelineEvent = {
 export default function Home() {
   const [birthDate, setBirthDate] = useState('')
   const [loading, setLoading] = useState(false)
-  const [famousPeople, setFamousPeople] = useState<FamousPerson[]>([])
   const [timeline, setTimeline] = useState<TimelineEvent[]>([])
   const [mounted, setMounted] = useState(false)
 
@@ -45,7 +39,6 @@ export default function Home() {
         throw new Error(data.error)
       }
       
-      setFamousPeople(data.famousPeople || [])
       setTimeline(data.timeline || [])
     } catch (error) {
       console.error('Error generating timeline:', error)
@@ -67,7 +60,7 @@ export default function Home() {
             私年表
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            あなたの生年月日を入力して、同じ誕生日の有名人と人生の年表を見つけましょう
+            あなたの生年月日を入力して、人生の歴史年表を見つけましょう
           </p>
         </div>
 
@@ -111,41 +104,6 @@ export default function Home() {
           </div>
         </div>
 
-        {famousPeople.length > 0 && (
-          <section className="mb-16">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-800 mb-2">
-                🌟 同じ誕生日の有名人
-              </h2>
-              <p className="text-gray-600">あなたと同じ日に生まれた著名人たち</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-              {famousPeople.map((person, index) => (
-                <div
-                  key={index}
-                  className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-                >
-                  <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0">
-                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                        {person.name.charAt(0)}
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-bold text-xl text-gray-900 mb-1">
-                        {person.name}
-                      </h3>
-                      <p className="text-sm text-blue-600 font-semibold mb-3 bg-blue-50 px-3 py-1 rounded-full inline-block">
-                        📅 {person.birthDate}
-                      </p>
-                      <p className="text-gray-600 leading-relaxed">{person.description}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
 
         {timeline.length > 0 && (
           <section>
