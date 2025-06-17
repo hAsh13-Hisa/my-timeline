@@ -6,21 +6,29 @@
    - Local:        http://localhost:3000
    - Network:      http://10.255.255.254:3000
    - Environments: .env.local
+   - Experiments (use with caution):
+     · esmExternals
 
  ✓ Starting...
- ✓ Ready in 2s
+ ⚠ The "experimental.esmExternals" option has been modified. experimental.esmExternals is not recommended to be modified as it may disrupt module resolution. It should be removed from your next.config.js.
+ ✓ Ready in 2.1s
  ○ Compiling /api/generate ...
- ✓ Compiled /api/generate in 2.4s (363 modules)
+ ✓ Compiled /api/generate in 944ms (363 modules)
 Rate limit hit, waiting 2000ms before retry 1/3
 Rate limit hit, waiting 4000ms before retry 2/3
 Rate limit hit, waiting 8000ms before retry 3/3
-OpenAI API failed, returning mock data: Error: Max retries exceeded
-    at generateWithOpenAI (app/api/generate/route.ts:193:8)
-    at async POST (app/api/generate/route.ts:22:21)
-  191 |   }
-  192 |
-> 193 |   throw new Error('Max retries exceeded')
+Error in generate API: Error: Max retries exceeded
+    at generateWithOpenAI (app/api/generate/route.ts:141:8)
+    at async POST (app/api/generate/route.ts:21:19)
+  139 |   }
+  140 |
+> 141 |   throw new Error('Max retries exceeded')
       |        ^
-  194 | }
- POST /api/generate 200 in 18156ms
-[?25h
+  142 | }
+ POST /api/generate 500 in 16724ms
+ │ POST https://api.openai.com/v1/chat/completions 429 in 365ms (cache skip)
+ │ │ Cache skipped reason: (auto no cache)
+ │ POST https://api.openai.com/v1/chat/completions 429 in 607ms (cache skip)
+ │ │ Cache skipped reason: (auto no cache)
+ │ POST https://api.openai.com/v1/chat/completions 429 in 453ms (cache skip)
+ │ │ Cache skipped reason: (auto no cache)

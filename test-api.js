@@ -1,6 +1,6 @@
-// OpenAI API単体テスト
-const testOpenAIAPI = async () => {
-  console.log('OpenAI APIテストを開始します...\n');
+// Claude API単体テスト
+const testClaudeAPI = async () => {
+  console.log('Claude APIテストを開始します...\n');
 
   // テスト用のダミーデータ
   const testData = {
@@ -75,4 +75,4 @@ const testOpenAIAPI = async () => {
 };
 
 // テストを実行
-testOpenAIAPI();
+testClaudeAPI();

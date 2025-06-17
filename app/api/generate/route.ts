@@ -17,8 +17,8 @@ export async function POST(request: NextRequest) {
     const birthMonth = birthDateObj.getMonth() + 1
     const birthDay = birthDateObj.getDate()
 
-    // OpenAI APIを使用して生成
-    const result = await generateWithOpenAI(birthMonth, birthDay, birthYear, currentYear)
+    // Claude APIを使用して生成
+    const result = await generateWithClaude(birthMonth, birthDay, birthYear, currentYear)
     return NextResponse.json(result)
   } catch (error) {
     console.error('Error in generate API:', error)
@@ -26,14 +26,14 @@ export async function POST(request: NextRequest) {
     // より詳細なエラーメッセージを返す
     let errorMessage = 'AI年表の生成中にエラーが発生しました'
     if (error instanceof Error) {
-      if (error.message.includes('OpenAI API key not configured')) {
-        errorMessage = 'OpenAI APIキーが設定されていません'
+      if (error.message.includes('Anthropic API key not configured')) {
+        errorMessage = 'Anthropic APIキーが設定されていません'
       } else if (error.message.includes('insufficient_quota')) {
-        errorMessage = 'OpenAI APIの使用量制限に達しています。課金設定を確認してください'
+        errorMessage = 'Anthropic APIの使用量制限に達しています。課金設定を確認してください'
       } else if (error.message.includes('rate_limit_exceeded')) {
-        errorMessage = 'OpenAI APIのレート制限に達しました。しばらく時間をおいて再度お試しください'
-      } else if (error.message.includes('OpenAI API error')) {
-        errorMessage = 'OpenAI APIでエラーが発生しました。しばらく時間をおいて再度お試しください'
+        errorMessage = 'Anthropic APIのレート制限に達しました。しばらく時間をおいて再度お試しください'
+      } else if (error.message.includes('Anthropic API error')) {
+        errorMessage = 'Anthropic APIでエラーが発生しました。しばらく時間をおいて再度お試しください'
       } else if (error.message.includes('解析に失敗')) {
         errorMessage = 'AI応答の解析に失敗しました。再度お試しください'
       } else if (error.message.includes('Max retries exceeded')) {
@@ -55,16 +55,16 @@ export async function POST(request: NextRequest) {
 }
 
 
-async function generateWithOpenAI(
+async function generateWithClaude(
   birthMonth: number,
   birthDay: number,
   birthYear: number,
   currentYear: number
 ) {
-  const apiKey = process.env.OPENAI_API_KEY
+  const apiKey = process.env.ANTHROPIC_API_KEY
 
   if (!apiKey) {
-    throw new Error('OpenAI API key not configured')
+    throw new Error('Anthropic API key not configured')
   }
 
   // レート制限エラー時のリトライ設定
@@ -100,20 +100,22 @@ JSON形式で返答してください。`
 
   while (retries < maxRetries) {
     try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
         },
         body: JSON.stringify({
-          model: 'gpt-3.5-turbo',
+          model: 'claude-3-haiku-20240307',
+          max_tokens: 2000,
           messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: userPrompt },
-          ],
-          temperature: 0.7,
-          max_tokens: 1000,
+            {
+              role: 'user',
+              content: `${systemPrompt}\n\n${userPrompt}`
+            }
+          ]
         }),
       })
 
@@ -127,19 +129,19 @@ JSON形式で返答してください。`
 
       if (!response.ok) {
         const errorData = await response.json()
-        console.error('OpenAI API Error:', errorData)
-        throw new Error(`OpenAI API error: ${response.statusText} - ${JSON.stringify(errorData)}`)
+        console.error('Anthropic API Error:', errorData)
+        throw new Error(`Anthropic API error: ${response.statusText} - ${JSON.stringify(errorData)}`)
       }
 
       const data = await response.json()
-      const content = data.choices[0].message.content
+      const content = data.content[0].text
       
       try {
         const result = JSON.parse(content)
         return result
       } catch (parseError) {
-        console.error('Failed to parse JSON response from OpenAI:', content)
-        throw new Error('OpenAI APIからの応答の解析に失敗しました')
+        console.error('Failed to parse JSON response from Claude:', content)
+        throw new Error('Claude APIからの応答の解析に失敗しました')
       }
     } catch (error) {
       if (retries === maxRetries - 1) {
